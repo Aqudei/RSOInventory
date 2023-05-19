@@ -50,16 +50,12 @@ namespace RSOInventory
             containerRegistry.RegisterDialog<NewItem>();
             containerRegistry.RegisterDialogWindow<MyMetroDialogWindow>();
 
-        }
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
 
             var regionManager = Container.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion("MainRegion", typeof(Views.Items));
+            regionManager.RegisterViewWithRegion("MainRegion", typeof(Items));
+            regionManager.RegisterViewWithRegion("MainRegion", typeof(Users));
         }
-
 
     }
 }

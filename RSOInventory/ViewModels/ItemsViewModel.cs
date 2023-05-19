@@ -19,7 +19,7 @@ using System.Windows.Threading;
 
 namespace RSOInventory.ViewModels
 {
-    internal class ItemsViewModel : BindableBase
+    internal class ItemsViewModel : BindableBase, IPage
     {
         private InventoryItem _selectedParent;
         private readonly IInventoryItemRepository _inventoryItemRepository;
@@ -61,6 +61,7 @@ namespace RSOInventory.ViewModels
             }
         }
 
+        public string Title => "Items";
 
         private void HandleCrudAction(string crudAction)
         {
@@ -115,7 +116,7 @@ namespace RSOInventory.ViewModels
 
         private void LoadItems()
         {
-            foreach (var item in _inventoryItemRepository.GetAll())
+            foreach (var item in _inventoryItemRepository.GetParentItems())
             {
                 _currentDispatcher.Invoke(() =>
                 {

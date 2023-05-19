@@ -10,5 +10,6 @@ namespace RSOInventory.Data
     internal interface IInventoryItemRepository : IRepository<InventoryItem>
     {
         IEnumerable<InventoryItem> ListChildren(int parentId);
+        IEnumerable<InventoryItem> GetParentItems();
     }
 }

@@ -8,12 +8,13 @@
                     xmlns:local="clr-namespace:RSOInventory"
                   WindowState="Maximized" WindowStartupLocation="CenterScreen"
                     mc:Ignorable="d" Title="Inventory Management System" Height="450" Width="800">
+    <mah:MetroWindow.Resources>
+        <Style TargetType="mah:MetroTabItem">
+            <Setter Property="Header" Value="{Binding DataContext.Title}"/>
+        </Style>
+    </mah:MetroWindow.Resources>
 
-    <Grid>
-        <DockPanel LastChildFill="True">
-            <ContentControl DockPanel.Dock="Right" prism:RegionManager.RegionName="RightRegion"/>
-            <ContentControl prism:RegionManager.RegionName="MainRegion"
-                            DockPanel.Dock="Left"/>
-        </DockPanel>
+    <Grid Margin="32">
+        <mah:MetroAnimatedSingleRowTabControl prism:RegionManager.RegionName="MainRegion" />
     </Grid>
 </mah:MetroWindow>

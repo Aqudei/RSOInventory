@@ -17,27 +17,23 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
         <!--Details-->
         <Image Grid.Column="1" 
                Source="{Binding ParentImage}"
-               Width="300" 
-               Height="300"
                Grid.Row="1"/>
 
         <Image Grid.Column="1" 
                Source="{Binding ChildImage}"
-               Width="300" 
-               Height="300"
                Grid.Row="2"/>
 
         <Grid Grid.Row="0">
@@ -92,12 +88,14 @@
                 </Grid>
             </Button>
             <TextBox Grid.Column="4"
+                     VerticalContentAlignment="Center"
                      mah:TextBoxHelper.Watermark="Search"
-                     Margin="5" 
+                     Margin="5"
                      Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Grid.Column="5" 
                     Content="Clear" 
-                    Margin="0,5,5,5"
+                    Margin="5"
+                    Width="64"
                     Command="{Binding ClearFilterCommand}"/>
         </Grid>
         <GroupBox Grid.Row="1" 

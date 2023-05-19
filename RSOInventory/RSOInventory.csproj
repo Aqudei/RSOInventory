@@ -28,7 +28,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://raw.githubusercontent.com/Aqudei/RSOInventory/master/RSOInventory/publish/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/Aqudei/RSOInventory/master/RSOInventory/publish/</UpdateUrl>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -226,6 +226,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Views\Users.xaml.cs">
+      <DependentUpon>Users.xaml</DependentUpon>
+    </Compile>
     <Page Include="Views\Dialogs\SelectItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -253,14 +256,17 @@
     <Compile Include="Data\IInventoryItemRepository.cs" />
     <Compile Include="Data\InventoryItemRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
+    <Compile Include="Data\Models\User.cs" />
     <Compile Include="Data\RepositoryBase.cs" />
     <Compile Include="Data\Models\InventoryItem.cs" />
     <Compile Include="Events\CrudEvent.cs" />
     <Compile Include="Data\Models\EntityBase.cs" />
+    <Compile Include="ViewModels\IPage.cs" />
     <Compile Include="ViewModels\ItemsViewModel.cs" />
     <Compile Include="ViewModels\NewItemViewModel.cs" />
     <Compile Include="ViewModels\SelectItemViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\UsersViewModel.cs" />
     <Compile Include="Views\Dialogs\SelectItem.xaml.cs">
       <DependentUpon>SelectItem.xaml</DependentUpon>
     </Compile>
@@ -277,6 +283,10 @@
       <DependentUpon>Shell.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Users.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

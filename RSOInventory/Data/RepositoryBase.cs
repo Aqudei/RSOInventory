@@ -39,6 +39,8 @@ namespace RSOInventory.Data
             return collection.FindById(id);
         }
 
+        
+
         public void Update(T item)
         {
             var collection = _database.GetCollection<T>();

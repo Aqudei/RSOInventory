@@ -19,6 +19,8 @@ namespace RSOInventory.Data.Models
         public string Condition { get; set; }
         public bool FoundInStation { get; set; }
         public string Image { get; set; }
-
+        public decimal PurchasedPrice { get; set; }
+        public string PlaceOfPurchased { get; set; }
+        public int EndUserId { get; set; }
     }
 }

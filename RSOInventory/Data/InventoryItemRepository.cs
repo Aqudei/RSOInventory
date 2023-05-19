@@ -12,6 +12,12 @@ namespace RSOInventory.Data
     {
         public InventoryItemRepository(LiteDatabase database) : base(database) { }
 
+        public IEnumerable<InventoryItem> GetParentItems()
+        {
+            var collection = _database.GetCollection<InventoryItem>();
+            return collection.Find(i => i.ParentId == 0);
+        }
+
         public IEnumerable<InventoryItem> ListChildren(int parentId)
         {
             var collection = _database.GetCollection<InventoryItem>();

@@ -58,10 +58,15 @@ namespace RSOInventory.ViewModels
         private string _pinNumber;
         private int _id;
         public string ImagePath { get => _imagePath; set => SetProperty(ref _imagePath, value); }
+        public string PlaceOfPurchase { get => _placeOfPurchase; set => SetProperty(ref _placeOfPurchase, value); }
+        public decimal PurchasedPrice { get => _purchasedPrice; set => SetProperty(ref _purchasedPrice, value); }
+        public int EndUserId { get => _endUser; set => SetProperty(ref _endUser, value); }
+
         private InventoryItem _parent;
-
         private DelegateCommand _browseFileCommand;
-
+        private string _placeOfPurchase;
+        private decimal _purchasedPrice;
+        private int _endUser;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -125,12 +130,15 @@ namespace RSOInventory.ViewModels
                         var newItem = _mapper.Map<InventoryItem>(this);
                         if (oldId == 0)
                         {
-                            _inventoryItemRepository.Add(newItem);
                             if (!string.IsNullOrWhiteSpace(_imagePath))
                             {
                                 var ext = Path.GetExtension(_imagePath);
-                                File.Copy(_imagePath, Path.Combine(_dataFolder, $"{newItem.Id}{ext}"), true);
+                                var imgPath = Path.Combine(_dataFolder, $"{Guid.NewGuid()}{ext}");
+                                File.Copy(_imagePath, imgPath, true);
+                                newItem.Image = imgPath;
                             }
+
+                            _inventoryItemRepository.Add(newItem);
 
                             _eventAggregator.GetEvent<PubSubEvent<CrudEvent<InventoryItem>>>().Publish(new CrudEvent<InventoryItem>
                             {
@@ -145,12 +153,18 @@ namespace RSOInventory.ViewModels
                         else
                         {
                             newItem.Id = oldId;
-                            _inventoryItemRepository.Update(newItem);
-                            if (!string.IsNullOrWhiteSpace(_imagePath) && !_imagePath.Contains( _dataFolder ))
+                            if (!string.IsNullOrWhiteSpace(_imagePath) && !_imagePath.Contains(_dataFolder))
                             {
                                 var ext = Path.GetExtension(_imagePath);
-                                File.Copy(_imagePath, Path.Combine(_dataFolder, $"{newItem.Id}{ext}"), true);
+                                var imgPath = Path.Combine(_dataFolder, $"{Guid.NewGuid()}{ext}");
+                                File.Copy(_imagePath, imgPath, true);
+                                newItem.Image = imgPath;
                             }
+
+                            _inventoryItemRepository.Update(newItem);
+
+                            var result = new DialogResult(ButtonResult.OK);
+                            RequestClose?.Invoke(result);
                         }
                         break;
                     }
@@ -177,6 +191,8 @@ namespace RSOInventory.ViewModels
                 {
                     Parent = Items.FirstOrDefault(i => i.Id == selectedItem.ParentId);
                 }
+
+                ImagePath = selectedItem.Image;
             }
         }
     }
