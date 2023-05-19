@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:prism="http://prismlibrary.com/"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:ico="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:RSOInventory.Views"
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
@@ -15,11 +16,29 @@
     </UserControl.Resources>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
+        <!--Details-->
+        <Image Grid.Column="1" 
+               Source="{Binding ParentImage}"
+               Width="300" 
+               Height="300"
+               Grid.Row="1"/>
+
+        <Image Grid.Column="1" 
+               Source="{Binding ChildImage}"
+               Width="300" 
+               Height="300"
+               Grid.Row="2"/>
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -32,26 +51,48 @@
             </Grid.ColumnDefinitions>
             <Button Margin="5" 
                     Grid.Column="0"
-           
                     Width="80"
-                    Command="{Binding CrudActionCommand}" Content="New"
-                    CommandParameter="Create"/>
+                    Command="{Binding CrudActionCommand}"
+                    CommandParameter="Create">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ico:PackIconFontAwesome Kind="PlusCircleSolid" VerticalAlignment="Center"/>
+                    <Label Content="New" Grid.Column="1"/>
+                </Grid>
+            </Button>
             <Button Margin="5" 
                     Grid.Column="1"
-                    Width="80"
-                    Command="{Binding CrudActionCommand}" Content="Edit"
-                    CommandParameter="Update"/>
+                    Width="100"
+                    Command="{Binding CrudActionCommand}"
+                    CommandParameter="Update">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ico:PackIconFontAwesome Kind="PenAltSolid" VerticalAlignment="Center"/>
+                    <Label Content="Update" Grid.Column="1"/>
+                </Grid>
+            </Button>
             <Button Margin="5" 
                     Grid.Column="2"
-                    Width="80"
-                    Command="{Binding CrudActionCommand}" Content="Delete"
-                    CommandParameter="Delete"/>
-            <Button Margin="5" 
-                    Grid.Column="3"
-                    Width="120"
-                    Command="{Binding NewChildItemCommand}"
-                    Content="New Child Item"/>
+                    Width="100"
+                    Command="{Binding CrudActionCommand}"
+                    CommandParameter="Delete">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ico:PackIconFontAwesome Kind="EraserSolid" VerticalAlignment="Center"/>
+                    <Label Content="Delete" Grid.Column="1"/>
+                </Grid>
+            </Button>
             <TextBox Grid.Column="4"
+                     mah:TextBoxHelper.Watermark="Search"
                      Margin="5" 
                      Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Grid.Column="5" 
@@ -77,6 +118,7 @@
                 IsReadOnly="True"
                 CanUserAddRows="False"
                 CanUserDeleteRows="False"
+                SelectedItem="{Binding SelectedChild}"
                 ItemsSource="{Binding ChildItems}"/>
         </GroupBox>
     </Grid>

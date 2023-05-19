@@ -18,6 +18,7 @@ namespace RSOInventory.Data.Models
         public string Location { get; set; }
         public string Condition { get; set; }
         public bool FoundInStation { get; set; }
+        public string Image { get; set; }
 
     }
 }

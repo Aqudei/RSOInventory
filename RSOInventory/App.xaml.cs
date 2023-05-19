@@ -42,13 +42,14 @@ namespace RSOInventory
                 .ForMember(dst => dst.FoundInStation, opt => opt.MapFrom(src => src.FoundInStation.ToUpper() == "Yes" ? true : false))
                 .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.Parent.Id));
             });
+
             containerRegistry.RegisterInstance(cfg.CreateMapper());
-
-
             containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
             containerRegistry.Register<IInventoryItemRepository, InventoryItemRepository>();
             containerRegistry.Register<ItemsViewModel>();
-            containerRegistry.RegisterForNavigation<NewItem>();
+            containerRegistry.RegisterDialog<NewItem>();
+            containerRegistry.RegisterDialogWindow<MyMetroDialogWindow>();
+
         }
 
         protected override void OnStartup(StartupEventArgs e)

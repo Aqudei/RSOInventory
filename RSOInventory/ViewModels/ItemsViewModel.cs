@@ -2,6 +2,7 @@
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 using RSOInventory.Data;
 using RSOInventory.Data.Models;
 using RSOInventory.Events;
@@ -24,12 +25,14 @@ namespace RSOInventory.ViewModels
         private readonly IInventoryItemRepository _inventoryItemRepository;
         private readonly IRegionManager _regionManager;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IDialogService _dialogService;
         private readonly Dispatcher _currentDispatcher;
 
         private ObservableCollection<InventoryItem> _parentItems = new ObservableCollection<InventoryItem>();
         public ICollectionView ParentItems { get => parentItems; set => SetProperty(ref parentItems, value); }
         public ObservableCollection<InventoryItem> ChildItems { get; set; } = new ObservableCollection<InventoryItem>();
         public InventoryItem SelectedParent { get => _selectedParent; set => SetProperty(ref _selectedParent, value); }
+        public InventoryItem SelectedChild { get => _selectedChild; set => SetProperty(ref _selectedChild, value); }
         private string _searchText;
 
         public string SearchText { get => _searchText; set => SetProperty(ref _searchText, value); }
@@ -39,6 +42,12 @@ namespace RSOInventory.ViewModels
 
         public DelegateCommand<string> CrudActionCommand => _crudActionCommand ??= new DelegateCommand<string>(HandleCrudAction);
         private DelegateCommand _clearFilterCommand;
+        private string parentImage;
+        private string childImage;
+        private InventoryItem _selectedChild;
+
+        public string ParentImage { get => parentImage; set => SetProperty(ref parentImage, value); }
+        public string ChildImage { get => childImage; set => SetProperty(ref childImage, value); }
 
         public DelegateCommand ClearFilterCommand
         {
@@ -59,16 +68,19 @@ namespace RSOInventory.ViewModels
             {
                 case "CREATE":
                     {
-                        _regionManager.RequestNavigate("RightRegion", "NewItem");
+                        _dialogService.ShowDialog("NewItem");
                         break;
                     }
                 case "UPDATE":
                     {
-                        var navParams = new NavigationParameters
+                        var navParams = new DialogParameters
                         {
                             { "SelectedItem", SelectedParent }
                         };
-                        _regionManager.RequestNavigate("RightRegion", "NewItem", navParams);
+                        _dialogService.ShowDialog("NewItem", navParams, r =>
+                        {
+
+                        });
                         break;
                     }
                 default:
@@ -76,12 +88,13 @@ namespace RSOInventory.ViewModels
             }
         }
 
-        public ItemsViewModel(IInventoryItemRepository inventoryItemRepository, IRegionManager regionManager, IEventAggregator eventAggregator)
+        public ItemsViewModel(IInventoryItemRepository inventoryItemRepository, IRegionManager regionManager, IEventAggregator eventAggregator, IDialogService dialogService)
         {
             PropertyChanged += ItemsViewModel_PropertyChanged;
             _inventoryItemRepository = inventoryItemRepository;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
+            _dialogService = dialogService;
             _currentDispatcher = Application.Current.Dispatcher;
             ParentItems = CollectionViewSource.GetDefaultView(_parentItems);
 
@@ -122,6 +135,15 @@ namespace RSOInventory.ViewModels
                             ChildItems.Clear();
                             var children = _inventoryItemRepository.ListChildren(SelectedParent.Id);
                             ChildItems.AddRange(children);
+                            ParentImage = SelectedParent.Image;
+                        }
+                        break;
+                    }
+                case nameof(SelectedChild):
+                    {
+                        if (SelectedChild != null)
+                        {
+                            ChildImage = SelectedChild.Image;
                         }
                         break;
                     }
@@ -142,8 +164,6 @@ namespace RSOInventory.ViewModels
                                 };
                             }
                         }
-
-
                         break;
                     }
             }
