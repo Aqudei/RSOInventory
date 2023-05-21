@@ -1,4 +1,5 @@
-﻿using RSOInventory.Events;
+﻿using LiteDB;
+using RSOInventory.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace RSOInventory.Data.Models
         public string Image { get; set; }
         public decimal PurchasedPrice { get; set; }
         public string PlaceOfPurchased { get; set; }
-        public int EndUserId { get; set; }
+
+        [BsonRef()]
+        public User EndUser { get; set; }
     }
 }

@@ -40,12 +40,18 @@ namespace RSOInventory
                 .ForMember(dst => dst.FoundInStation, opt => opt.MapFrom(src => src.FoundInStation ? "Yes" : "No"))
                 .ReverseMap()
                 .ForMember(dst => dst.FoundInStation, opt => opt.MapFrom(src => src.FoundInStation.ToUpper() == "Yes" ? true : false))
-                .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.Parent.Id));
+                .ForMember(dst => dst.ParentId, opt => opt.MapFrom(src => src.Parent.Id))
+                .ForMember(dst => dst.EndUser, opt => opt.MapFrom(src => src.EndUser))
+                .ForMember(dst => dst.Image, opt => opt.MapFrom(src => src.ImagePath));
+
+                cfg.CreateMap<UsersViewModel, User>().ReverseMap();
+                cfg.CreateMap<User, User>().ReverseMap();
             });
 
             containerRegistry.RegisterInstance(cfg.CreateMapper());
             containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
             containerRegistry.Register<IInventoryItemRepository, InventoryItemRepository>();
+            containerRegistry.Register<IUserRepository, UserRepository>();
             containerRegistry.Register<ItemsViewModel>();
             containerRegistry.RegisterDialog<NewItem>();
             containerRegistry.RegisterDialogWindow<MyMetroDialogWindow>();

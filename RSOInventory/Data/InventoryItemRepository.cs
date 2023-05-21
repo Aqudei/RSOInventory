@@ -14,7 +14,7 @@ namespace RSOInventory.Data
 
         public IEnumerable<InventoryItem> GetParentItems()
         {
-            var collection = _database.GetCollection<InventoryItem>();
+            var collection = _database.GetCollection<InventoryItem>().Include(i=>i.EndUser);
             return collection.Find(i => i.ParentId == 0);
         }
 

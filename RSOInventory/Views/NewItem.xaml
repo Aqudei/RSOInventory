@@ -6,10 +6,9 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:local="clr-namespace:RSOInventory.Views"
              xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="RSOInventory.Views.NewItem"
-             prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" Width="500"
-             d:DesignHeight="1000" d:DesignWidth="800">
-    
+             prism:ViewModelLocator.AutoWireViewModel="True" Width="800"
+             mc:Ignorable="d" d:DesignHeight="1000" d:DesignWidth="800">
+
     <prism:Dialog.WindowStyle>
         <Style TargetType="{x:Type local:MyMetroDialogWindow}">
             <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterScreen" />
@@ -19,7 +18,7 @@
             <Setter Property="SizeToContent" Value="WidthAndHeight"/>
         </Style>
     </prism:Dialog.WindowStyle>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -41,7 +40,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
-            <ColumnDefinition  Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Content="Name:" Margin="2,2,2,2" />
         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="2,2,2,2" />
@@ -106,36 +106,39 @@
         <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding PurchasedPrice, UpdateSourceTrigger=PropertyChanged}" Margin="2,2,2,2" Grid.ColumnSpan="2" />
 
         <Label Grid.Row="11" Grid.Column="0" Content="End User:" Margin="2,2,2,2" />
-        <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding EndUser, UpdateSourceTrigger=PropertyChanged}" Margin="2,2,2,2" Grid.ColumnSpan="2" />
+        <ComboBox Grid.Row="11" 
+                  ItemsSource="{Binding Users}"
+                  SelectedItem="{Binding EndUser, Mode=TwoWay}"
+                  Grid.Column="1" 
+                  Margin="2,2,2,2" Grid.ColumnSpan="2" />
 
-        
+
         <Label Grid.Row="12" Grid.Column="0" Content="Image:" Margin="2,2,2,2" />
+        <TextBox Grid.Row="12" 
+                  Grid.Column="1" 
+                  Text="{Binding ImagePath, UpdateSourceTrigger=PropertyChanged}" Margin="2,2,2,2" />
         <Button  Grid.Row="12" 
                  Command="{Binding BrowseFileCommand}"
                  Margin="2"
                  Grid.Column="2" 
                  Content="Browse"/>
-        
-        
-        <TextBox Grid.Row="12" 
-                  Grid.Column="1" 
-                  Text="{Binding ImagePath, UpdateSourceTrigger=PropertyChanged}" Margin="2,2,2,2" 
-                 Grid.ColumnSpan="1" >
-  
-        </TextBox>
 
-        <Image Grid.Row="13" 
-               Grid.Column="1" 
-               Width="300" 
-               Height="300" 
-               Margin="10" 
-               Source="{Binding ImagePath}"/>
-        
-        
-        
-        <StackPanel Grid.Row="14" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Save" Margin="5" Width="120" Command="{Binding ActionCommand}" CommandParameter="Save"/>
-            <Button Content="Close" Margin="5" Width="120" Command="{Binding ActionCommand}" CommandParameter="Close"/>
+        <StackPanel Grid.Row="13" 
+                    Grid.Column="1"
+                    Grid.ColumnSpan="1"
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center">
+            <Button Content="Save" Margin="5" Command="{Binding ActionCommand}" CommandParameter="Save"/>
+            <Button Content="Close" Margin="5" Command="{Binding ActionCommand}" CommandParameter="Close"/>
         </StackPanel>
+
+
+        <Image Grid.Row="0"
+               Grid.RowSpan="15"
+               Grid.Column="3" 
+               Width="400" 
+               Height="400" 
+               Margin="20" 
+               Source="{Binding ImagePath}"/>
     </Grid>
 </UserControl>

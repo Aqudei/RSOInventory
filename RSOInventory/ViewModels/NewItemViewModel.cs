@@ -25,6 +25,13 @@ namespace RSOInventory.ViewModels
     internal class NewItemViewModel : BindableBase, IDialogAware
     {
         public ObservableCollection<InventoryItem> Items { get; set; } = new ObservableCollection<InventoryItem>();
+        public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
+
+        public User EndUser
+        {
+            get => endUser;
+            set => SetProperty(ref endUser, value);
+        }
         public InventoryItem Parent { get => _parent; set => SetProperty(ref _parent, value); }
 
         private DelegateCommand<string> _actionCommand;
@@ -43,6 +50,7 @@ namespace RSOInventory.ViewModels
         private readonly string _dataFolder;
         private string _imagePath;
         private readonly IEventAggregator _eventAggregator;
+        private readonly IUserRepository userRepository;
 
         public string FoundInStation { get => _foundInStation; set => SetProperty(ref _foundInStation, value); }
         public DelegateCommand<string> ActionCommand => _actionCommand ??= new DelegateCommand<string>(HandleAction);
@@ -67,6 +75,7 @@ namespace RSOInventory.ViewModels
         private string _placeOfPurchase;
         private decimal _purchasedPrice;
         private int _endUser;
+        private User endUser;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -89,7 +98,7 @@ namespace RSOInventory.ViewModels
             }
         }
 
-        public string[] Conditions { get; set; } = { "BER", "Servicable" };
+        public string[] Conditions { get; set; } = { "BER", "SERVICABLE", "UNSERVICABLE" };
         public string PinNumber
         {
             get { return _pinNumber; }
@@ -98,10 +107,12 @@ namespace RSOInventory.ViewModels
 
         public string Title => "Inventory Item Editor";
 
-        public NewItemViewModel(IRegionManager regionManager, IInventoryItemRepository inventoryItemRepository, IMapper mapper, IEventAggregator eventAggregator)
+        public NewItemViewModel(IRegionManager regionManager, IInventoryItemRepository inventoryItemRepository, IMapper mapper, IEventAggregator eventAggregator,
+            IUserRepository userRepository)
         {
             _inventoryItemRepository = inventoryItemRepository;
             _eventAggregator = eventAggregator;
+            this.userRepository = userRepository;
             _regionManager = regionManager;
             _mapper = mapper;
 
@@ -112,6 +123,7 @@ namespace RSOInventory.ViewModels
             }
 
             Items.AddRange(_inventoryItemRepository.GetAll());
+            Users.AddRange(userRepository.GetAll());
         }
 
         private void HandleAction(string cmd)
@@ -128,6 +140,8 @@ namespace RSOInventory.ViewModels
                     {
                         var oldId = Id;
                         var newItem = _mapper.Map<InventoryItem>(this);
+                        _mapper.Map(EndUser, newItem.EndUser);
+
                         if (oldId == 0)
                         {
                             if (!string.IsNullOrWhiteSpace(_imagePath))
@@ -162,7 +176,11 @@ namespace RSOInventory.ViewModels
                             }
 
                             _inventoryItemRepository.Update(newItem);
-
+                            _eventAggregator.GetEvent<PubSubEvent<CrudEvent<InventoryItem>>>().Publish(new CrudEvent<InventoryItem>
+                            {
+                                CrudAction = CrudEvent<InventoryItem>.CrudActionType.Updated,
+                                Entity = newItem
+                            });
                             var result = new DialogResult(ButtonResult.OK);
                             RequestClose?.Invoke(result);
                         }
@@ -190,6 +208,11 @@ namespace RSOInventory.ViewModels
                 if (selectedItem.ParentId != 0)
                 {
                     Parent = Items.FirstOrDefault(i => i.Id == selectedItem.ParentId);
+                }
+
+                if (selectedItem.EndUser != null)
+                {
+                    EndUser = Users.FirstOrDefault(u => u.Id == selectedItem.EndUser.Id);
                 }
 
                 ImagePath = selectedItem.Image;

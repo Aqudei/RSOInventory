@@ -67,6 +67,12 @@ namespace RSOInventory.ViewModels
         {
             switch (crudAction.ToUpper())
             {
+                case "DELETE":
+                    {
+                        _inventoryItemRepository.Delete(SelectedParent.Id);
+                        _parentItems.Remove(SelectedParent);
+                        break;
+                    }
                 case "CREATE":
                     {
                         _dialogService.ShowDialog("NewItem");
@@ -74,10 +80,14 @@ namespace RSOInventory.ViewModels
                     }
                 case "UPDATE":
                     {
+                        if (SelectedParent == null)
+                            return;
+
                         var navParams = new DialogParameters
                         {
                             { "SelectedItem", SelectedParent }
                         };
+
                         _dialogService.ShowDialog("NewItem", navParams, r =>
                         {
 
@@ -91,7 +101,6 @@ namespace RSOInventory.ViewModels
 
         public ItemsViewModel(IInventoryItemRepository inventoryItemRepository, IRegionManager regionManager, IEventAggregator eventAggregator, IDialogService dialogService)
         {
-            PropertyChanged += ItemsViewModel_PropertyChanged;
             _inventoryItemRepository = inventoryItemRepository;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
@@ -112,6 +121,9 @@ namespace RSOInventory.ViewModels
                     _parentItems.Add(r.Entity);
                 }
             });
+
+            PropertyChanged += ItemsViewModel_PropertyChanged;
+
         }
 
         private void LoadItems()

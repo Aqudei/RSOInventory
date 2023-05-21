@@ -10,6 +10,7 @@ namespace RSOInventory.Data.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Unit { get; set; }
 
         public override string ToString()
         {
