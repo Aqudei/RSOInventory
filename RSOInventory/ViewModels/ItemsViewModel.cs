@@ -29,8 +29,10 @@ namespace RSOInventory.ViewModels
         private readonly Dispatcher _currentDispatcher;
 
         private ObservableCollection<InventoryItem> _parentItems = new ObservableCollection<InventoryItem>();
-        public ICollectionView ParentItems { get => parentItems; set => SetProperty(ref parentItems, value); }
-        public ObservableCollection<InventoryItem> ChildItems { get; set; } = new ObservableCollection<InventoryItem>();
+        public ICollectionView ParentItemsView { get => parentItems; set => SetProperty(ref parentItems, value); }
+        private ObservableCollection<InventoryItem> _childItems = new ObservableCollection<InventoryItem>();
+        public ICollectionView ChildItemsView { get => _childItemsView; set => SetProperty(ref _childItemsView, value); }
+
         public InventoryItem SelectedParent { get => _selectedParent; set => SetProperty(ref _selectedParent, value); }
         public InventoryItem SelectedChild { get => _selectedChild; set => SetProperty(ref _selectedChild, value); }
         private string _searchText;
@@ -49,13 +51,69 @@ namespace RSOInventory.ViewModels
         public string ParentImage { get => parentImage; set => SetProperty(ref parentImage, value); }
         public string ChildImage { get => childImage; set => SetProperty(ref childImage, value); }
 
+        private DelegateCommand<string> _subItemCrudActionCommand;
+        private ICollectionView _childItemsView;
+
+        public DelegateCommand<string> SubItemCrudActionCommand
+        {
+            get { return _subItemCrudActionCommand ??= new DelegateCommand<string>(HandleSubItemCrudAction); }
+        }
+
+        private void HandleSubItemCrudAction(string command)
+        {
+            switch (command.ToUpper())
+            {
+                case "UPDATE":
+                    {
+                        if (SelectedChild == null)
+                            return;
+
+                        var parameters = new DialogParameters
+                        {
+                            { "SelectedItem", SelectedChild },
+                        };
+
+                        _dialogService.Show("NewItem", parameters, r =>
+                        {
+
+                        });
+                        break;
+                    }
+                case "DELETE":
+                    {
+                        _inventoryItemRepository.Delete(SelectedChild.Id);
+                        _childItems.Remove(SelectedChild);
+                        break;
+                    }
+
+                case "NEW":
+                    {
+                        if (SelectedParent == null)
+                            return;
+
+
+                        var parameters = new DialogParameters
+                        {
+                            { "SelectedItem", SelectedParent },
+                            { "IsSubItem", true }
+                        };
+
+                        _dialogService.Show("NewItem", parameters, r =>
+                        {
+
+                        });
+                        break;
+                    }
+            }
+        }
+
         public DelegateCommand ClearFilterCommand
         {
             get
             {
                 return _clearFilterCommand ??= new DelegateCommand(() =>
                 {
-                    ParentItems.Filter = null;
+                    ParentItemsView.Filter = null;
                     _searchText = "";
                 });
             }
@@ -106,19 +164,36 @@ namespace RSOInventory.ViewModels
             _eventAggregator = eventAggregator;
             _dialogService = dialogService;
             _currentDispatcher = Application.Current.Dispatcher;
-            ParentItems = CollectionViewSource.GetDefaultView(_parentItems);
+            ParentItemsView = CollectionViewSource.GetDefaultView(_parentItems);
+            ChildItemsView = CollectionViewSource.GetDefaultView(_childItems);
 
             Task.Run(LoadItems);
 
             _eventAggregator.GetEvent<PubSubEvent<CrudEvent<InventoryItem>>>().Subscribe(r =>
             {
-                var existing = _parentItems.FirstOrDefault(i => i.Id == r.Entity.Id);
-                if (existing != null)
-                    _parentItems.Remove(existing);
+                var parentItem = _parentItems.FirstOrDefault(i => i.Id == r.Entity.Id);
+                if (parentItem != null)
+                {
+                    _parentItems.Remove(parentItem);
+                }
+
+                var childItem = _childItems.FirstOrDefault(i => i.Id == r.Entity.Id);
+                if (childItem != null)
+                {
+                    _childItems.Remove(childItem);
+                }
+
 
                 if (r.CrudAction == CrudEvent<InventoryItem>.CrudActionType.Created || r.CrudAction == CrudEvent<InventoryItem>.CrudActionType.Updated)
                 {
-                    _parentItems.Add(r.Entity);
+                    if (r.Entity.ParentId == 0)
+                    {
+                        _parentItems.Add(r.Entity);
+                    }
+                    else
+                    {
+                        _childItems.Add(r.Entity);
+                    }
                 }
             });
 
@@ -145,9 +220,9 @@ namespace RSOInventory.ViewModels
                     {
                         if (SelectedParent != null)
                         {
-                            ChildItems.Clear();
+                            _childItems.Clear();
                             var children = _inventoryItemRepository.ListChildren(SelectedParent.Id);
-                            ChildItems.AddRange(children);
+                            _childItems.AddRange(children);
                             ParentImage = SelectedParent.Image;
                         }
                         break;
@@ -162,15 +237,15 @@ namespace RSOInventory.ViewModels
                     }
                 case nameof(SearchText):
                     {
-                        if (string.IsNullOrWhiteSpace(SearchText) && ParentItems.Filter != null)
+                        if (string.IsNullOrWhiteSpace(SearchText) && ParentItemsView.Filter != null)
                         {
-                            ParentItems.Filter = null;
+                            ParentItemsView.Filter = null;
                         }
                         else
                         {
                             if (SearchText.Length >= 3)
                             {
-                                ParentItems.Filter = i =>
+                                ParentItemsView.Filter = i =>
                                 {
                                     var inventoryItem = i as InventoryItem;
                                     return inventoryItem.Name.ToLower().Contains(SearchText.ToLower());

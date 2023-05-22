@@ -201,21 +201,32 @@ namespace RSOInventory.ViewModels
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            var hasValue = parameters.TryGetValue<InventoryItem>("SelectedItem", out var selectedItem);
-            if (hasValue)
+            if (parameters.TryGetValue<bool>("IsSubItem", out var isSubItem) && isSubItem)
             {
-                _mapper.Map(selectedItem, this);
-                if (selectedItem.ParentId != 0)
+                if (!parameters.TryGetValue<InventoryItem>("SelectedItem", out var selectedItem))
                 {
-                    Parent = Items.FirstOrDefault(i => i.Id == selectedItem.ParentId);
-                }
+                    return;
+                };
 
-                if (selectedItem.EndUser != null)
+                Parent = Items.FirstOrDefault(i => i.Id == selectedItem.Id);
+            }
+            else
+            {
+                if (parameters.TryGetValue<InventoryItem>("SelectedItem", out var selectedItem))
                 {
-                    EndUser = Users.FirstOrDefault(u => u.Id == selectedItem.EndUser.Id);
-                }
+                    _mapper.Map(selectedItem, this);
+                    if (selectedItem.ParentId != 0)
+                    {
+                        Parent = Items.FirstOrDefault(i => i.Id == selectedItem.ParentId);
+                    }
 
-                ImagePath = selectedItem.Image;
+                    if (selectedItem.EndUser != null)
+                    {
+                        EndUser = Users.FirstOrDefault(u => u.Id == selectedItem.EndUser.Id);
+                    }
+
+                    ImagePath = selectedItem.Image;
+                }
             }
         }
     }

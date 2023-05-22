@@ -28,7 +28,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://raw.githubusercontent.com/Aqudei/RSOInventory/master/RSOInventory/publish/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/Aqudei/RSOInventory/master/RSOInventory/publish/</UpdateUrl>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -231,6 +231,7 @@
     <Compile Include="Views\Users.xaml.cs">
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Wpf\GenericBooleanConverter.cs" />
     <Page Include="Views\Dialogs\SelectItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

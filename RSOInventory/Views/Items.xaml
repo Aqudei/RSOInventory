@@ -7,12 +7,12 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:ico="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:local="clr-namespace:RSOInventory.Views"
+             xmlns:wpf="clr-namespace:RSOInventory.Wpf"
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-
-
+        <wpf:GenericBooleanConverter TrueValue="Yes" FalseValue="No" x:Key="BooleanToYesNoConverter" />
     </UserControl.Resources>
 
     <Grid>
@@ -20,13 +20,13 @@
             <ColumnDefinition Width="10*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <!--Details-->
         <Image Grid.Column="1" 
                Source="{Binding ParentImage}"
@@ -38,86 +38,167 @@
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition  />
                 <ColumnDefinition  Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Margin="5" 
-                    Grid.Column="0"
-                    Width="80"
-                    Command="{Binding CrudActionCommand}"
-                    CommandParameter="Create">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <ico:PackIconFontAwesome Kind="PlusCircleSolid" VerticalAlignment="Center"/>
-                    <Label Content="New" Grid.Column="1"/>
-                </Grid>
-            </Button>
-            <Button Margin="5" 
-                    Grid.Column="1"
-                    Width="100"
-                    Command="{Binding CrudActionCommand}"
-                    CommandParameter="Update">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <ico:PackIconFontAwesome Kind="PenAltSolid" VerticalAlignment="Center"/>
-                    <Label Content="Update" Grid.Column="1"/>
-                </Grid>
-            </Button>
-            <Button Margin="5" 
-                    Grid.Column="2"
-                    Width="100"
-                    Command="{Binding CrudActionCommand}"
-                    CommandParameter="Delete">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <ico:PackIconFontAwesome Kind="EraserSolid" VerticalAlignment="Center"/>
-                    <Label Content="Delete" Grid.Column="1"/>
-                </Grid>
-            </Button>
-            <TextBox Grid.Column="4"
+
+
+            <TextBox Grid.Column="0"
                      VerticalContentAlignment="Center"
                      mah:TextBoxHelper.Watermark="Search"
                      Margin="5"
                      Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button Grid.Column="5" 
+            <Button Grid.Column="1" 
                     Content="Clear" 
                     Margin="5"
                     Width="64"
                     Command="{Binding ClearFilterCommand}"/>
         </Grid>
-        <GroupBox Grid.Row="1" 
-                  Margin="10"
-                  Header="Master List">
-            <DataGrid 
-                IsReadOnly="True"
-                CanUserAddRows="False"
-                CanUserDeleteRows="False"
-                SelectedItem="{Binding SelectedParent}"
-                ItemsSource="{Binding ParentItems}"/>
+        <Grid Grid.Row="1" 
+                  Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
 
-        </GroupBox>
-        <GroupBox Grid.Row="2"   
-                  Margin="10"
-                  Header="Sub Items">
-            <DataGrid                   
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Label VerticalAlignment="Center" 
+                       FontSize="16" 
+                       FontWeight="DemiBold">MASTER LIST</Label>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Margin="5" 
+                    Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                    Grid.Column="0"
+                    Width="40" Height="40"
+                    Command="{Binding CrudActionCommand}"
+                    CommandParameter="Create">
+                        <ico:PackIconFontAwesome Kind="PlusCircleSolid" 
+                                         VerticalAlignment="Center"/>
+                    </Button>
+                    <Button Margin="5" 
+                    Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                    Width="40" Height="40"
+                    Grid.Column="1"
+                    Command="{Binding CrudActionCommand}"
+                    CommandParameter="Update">
+                        <ico:PackIconFontAwesome Kind="PenAltSolid" VerticalAlignment="Center"/>
+                    </Button>
+
+
+                    <Button Margin="5" 
+                    Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                    Width="40" Height="40"
+                    Grid.Column="2"
+                    Command="{Binding CrudActionCommand}"
+                    CommandParameter="Delete">
+
+                        <ico:PackIconFontAwesome Kind="EraserSolid" VerticalAlignment="Center"/>
+
+                    </Button>
+                </StackPanel>
+
+            </Grid>
+
+            <DataGrid Grid.Row="1"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      AutoGenerateColumns="False"
+                      SelectedItem="{Binding SelectedParent}"
+                      ItemsSource="{Binding ParentItemsView}">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="Date Purchased" Binding="{Binding DatePurchased}"/>
+                    <DataGridTextColumn Header="Serial No." Binding="{Binding SerialNumber}"/>
+                    <DataGridTextColumn Header="PIN" Binding="{Binding PinNumber}"/>
+                    <DataGridTextColumn Header="Location" Binding="{Binding Location}"/>
+                    <DataGridTextColumn Header="Condition" Binding="{Binding Condition}"/>
+                    <DataGridTextColumn Header="Price" Binding="{Binding PurchasedPrice}"/>
+                    <DataGridTextColumn Header="Purchased At" Binding="{Binding PlaceOfPurchased}"/>
+                    <DataGridTextColumn Header="Found In Station" Binding="{Binding FoundInStation, Converter={StaticResource BooleanToYesNoConverter}}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+        </Grid>
+        <Grid Grid.Row="2"   
+                  Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <Label Grid.Row="0" 
+                       VerticalAlignment="Center"
+                       FontSize="16" FontWeight="DemiBold">SUB ITEMS</Label>
+
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Margin="5" 
+                            Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                            Grid.Column="0"
+                            Width="40" Height="40"
+                            Command="{Binding SubItemCrudActionCommand}"
+                            CommandParameter="New">  
+                        <ico:PackIconFontAwesome Kind="PlusCircleSolid" 
+                                         VerticalAlignment="Center"/>
+                    </Button>
+                    <Button Margin="5" 
+                    Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                    Width="40" Height="40"
+                    Grid.Column="1"
+                    Command="{Binding SubItemCrudActionCommand}"
+                    CommandParameter="Update">
+                        <ico:PackIconFontAwesome Kind="PenAltSolid" VerticalAlignment="Center"/>
+                    </Button>
+
+
+                    <Button Margin="5" 
+                    Style="{DynamicResource MahApps.Styles.Button.Circle}"
+                    Width="40" Height="40"
+                    Grid.Column="2"
+                    Command="{Binding SubItemCrudActionCommand}"
+                    CommandParameter="Delete">
+
+                        <ico:PackIconFontAwesome Kind="EraserSolid" VerticalAlignment="Center"/>
+
+                    </Button>
+                </StackPanel>
+
+            </Grid>
+
+            <DataGrid  Grid.Row="1"
                 IsReadOnly="True"
                 CanUserAddRows="False"
                 CanUserDeleteRows="False"
+                       AutoGenerateColumns="False"
                 SelectedItem="{Binding SelectedChild}"
-                ItemsSource="{Binding ChildItems}"/>
-        </GroupBox>
+                ItemsSource="{Binding ChildItemsView}">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="Date Purchased" Binding="{Binding DatePurchased}"/>
+                    <DataGridTextColumn Header="Serial No." Binding="{Binding SerialNumber}"/>
+                    <DataGridTextColumn Header="PIN" Binding="{Binding PinNumber}"/>
+                    <DataGridTextColumn Header="Location" Binding="{Binding Location}"/>
+                    <DataGridTextColumn Header="Condition" Binding="{Binding Condition}"/>
+                    <DataGridTextColumn Header="Price" Binding="{Binding PurchasedPrice}"/>
+                    <DataGridTextColumn Header="Purchased At" Binding="{Binding PlaceOfPurchased}"/>
+                    <DataGridTextColumn Header="Found In Station" Binding="{Binding FoundInStation, Converter={StaticResource BooleanToYesNoConverter}}"/>
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </Grid>
     </Grid>
 </UserControl>
