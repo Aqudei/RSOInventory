@@ -15,7 +15,7 @@ using System.Windows.Threading;
 
 namespace RSOInventory.ViewModels
 {
-    internal class UsersViewModel : BindableBase, IPage
+    internal class UsersViewModel : PageBase
     {
         private Dispatcher _dispatcher;
         private User selectedUser;
@@ -84,7 +84,7 @@ namespace RSOInventory.ViewModels
             }
         }
 
-        public string Title => "Users";
+        public override string Title => "Users";
 
         public UsersViewModel(IUserRepository userRepository, IMapper mapper)
         {

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LiteDB;
+using MahApps.Metro.Controls.Dialogs;
 using Prism.DryIoc;
 using Prism.Events;
 using Prism.Ioc;
@@ -53,6 +54,7 @@ namespace RSOInventory
             containerRegistry.Register<IInventoryItemRepository, InventoryItemRepository>();
             containerRegistry.Register<IUserRepository, UserRepository>();
             containerRegistry.Register<ItemsViewModel>();
+            containerRegistry.RegisterInstance(DialogCoordinator.Instance);
             containerRegistry.RegisterDialog<NewItem>();
             containerRegistry.RegisterDialogWindow<MyMetroDialogWindow>();
 
@@ -61,7 +63,7 @@ namespace RSOInventory
             var regionManager = Container.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion("MainRegion", typeof(Items));
             regionManager.RegisterViewWithRegion("MainRegion", typeof(Users));
+            regionManager.RegisterViewWithRegion("MainRegion", typeof(Barcoding));
         }
-
     }
 }

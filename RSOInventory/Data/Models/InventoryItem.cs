@@ -14,14 +14,17 @@ namespace RSOInventory.Data.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime? DatePurchased { get; set; }
-        public string SerialNumber { get; set; }
-        public string PinNumber { get; set; }
+        public string SerialNumber { get; set; } = "";
+        public string PinNumber { get; set; } = "";
         public string Location { get; set; }
         public string Condition { get; set; }
         public bool FoundInStation { get; set; }
         public string Image { get; set; }
         public decimal PurchasedPrice { get; set; }
         public string PlaceOfPurchased { get; set; }
+
+        [BsonIgnore]
+        public bool IsSelected { get; set; }
 
         [BsonRef()]
         public User EndUser { get; set; }
