@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
+using Prism;
 using Prism.Commands;
 using RSOInventory.Data;
 using RSOInventory.Data.Models;
@@ -21,7 +22,7 @@ using ZXing.QrCode;
 
 namespace RSOInventory.ViewModels
 {
-    internal class BarcodingViewModel : PageBase
+    internal class BarcodingViewModel : PageBase, IActiveAware
     {
         private readonly IInventoryItemRepository _inventoryItemRepository;
         private readonly IDialogCoordinator _dialogCoordinator;
@@ -30,6 +31,9 @@ namespace RSOInventory.ViewModels
         private ObservableCollection<InventoryItem> _items = new ObservableCollection<InventoryItem>();
         private string searchText;
         private DelegateCommand generateBarcodeCommand;
+        private bool _isActive;
+
+        public event EventHandler IsActiveChanged;
 
         public DelegateCommand GenerateBarcodeCommand { get => generateBarcodeCommand ??= new DelegateCommand(HandleGenerateBarcode); }
 
@@ -127,6 +131,11 @@ namespace RSOInventory.ViewModels
 
             FetchItems();
 
+            IsActiveChanged += (s, e) =>
+            {
+                Debug.WriteLine("Active Changed!");
+            };
+
             PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
@@ -170,5 +179,13 @@ namespace RSOInventory.ViewModels
         }
 
         public override string Title => "Barcoding";
+
+        public bool IsActive { get => _isActive; set => SetProperty(ref _isActive, value, OnIsActiveChanged); }
+
+        private void OnIsActiveChanged()
+        {
+            IsActiveChanged?.Invoke(this, EventArgs.Empty);
+
+        }
     }
 }

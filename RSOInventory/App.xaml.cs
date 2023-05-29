@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LiteDB;
+using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Prism.DryIoc;
 using Prism.Events;
@@ -9,6 +10,7 @@ using RSOInventory.Data;
 using RSOInventory.Data.Models;
 using RSOInventory.ViewModels;
 using RSOInventory.Views;
+using RSOInventory.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -28,6 +30,14 @@ namespace RSOInventory
         {
 
             return Container.Resolve<Shell>();
+        }
+
+
+        protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)
+        {
+            // Custom Adapters
+            base.ConfigureRegionAdapterMappings(regionAdapterMappings);
+            regionAdapterMappings.RegisterMapping(typeof(HamburgerMenu), Container.Resolve<MahAppsHamburgerMenuRegionAdapter>());
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -59,11 +69,14 @@ namespace RSOInventory
             containerRegistry.RegisterDialogWindow<MyMetroDialogWindow>();
 
 
+            containerRegistry.RegisterForNavigation<Items>();
+            containerRegistry.RegisterForNavigation<Users>();
+            containerRegistry.RegisterForNavigation<Barcoding>();
 
-            var regionManager = Container.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion("MainRegion", typeof(Items));
-            regionManager.RegisterViewWithRegion("MainRegion", typeof(Users));
-            regionManager.RegisterViewWithRegion("MainRegion", typeof(Barcoding));
+            //var regionManager = Container.Resolve<IRegionManager>();
+            //regionManager.RegisterViewWithRegion("MainRegion", typeof(Items));
+            //regionManager.RegisterViewWithRegion("MainRegion", typeof(Users));
+            //regionManager.RegisterViewWithRegion("MainRegion", typeof(Barcoding));
         }
     }
 }

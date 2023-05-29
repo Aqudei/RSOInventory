@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace RSOInventory.Views
     /// <summary>
     /// Interaction logic for Items.xaml
     /// </summary>
-    public partial class Items : UserControl
+    public partial class Items 
     {
         public Items()
         {

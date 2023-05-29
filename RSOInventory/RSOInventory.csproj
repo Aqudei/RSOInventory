@@ -28,7 +28,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://raw.githubusercontent.com/Aqudei/RSOInventory/master/RSOInventory/publish/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/Aqudei/RSOInventory/master/RSOInventory/publish/</UpdateUrl>
-    <ApplicationRevision>5</ApplicationRevision>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -242,6 +242,7 @@
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wpf\GenericBooleanConverter.cs" />
+    <Compile Include="Wpf\HamburgerRegionBehaviour.cs" />
     <Page Include="Views\Barcoding.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
