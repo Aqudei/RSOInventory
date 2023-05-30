@@ -28,7 +28,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://raw.githubusercontent.com/Aqudei/RSOInventory/master/RSOInventory/publish/</InstallUrl>
     <UpdateUrl>https://raw.githubusercontent.com/Aqudei/RSOInventory/master/RSOInventory/publish/</UpdateUrl>
-    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -238,6 +238,7 @@
     <Compile Include="Views\Barcoding.xaml.cs">
       <DependentUpon>Barcoding.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MyMenuItem.cs" />
     <Compile Include="Views\Users.xaml.cs">
       <DependentUpon>Users.xaml</DependentUpon>
     </Compile>
@@ -280,7 +281,7 @@
     <Compile Include="Events\CrudEvent.cs" />
     <Compile Include="Data\Models\EntityBase.cs" />
     <Compile Include="ViewModels\PageBase.cs" />
-    <Compile Include="ViewModels\Dialogs\ItemsViewModel.cs" />
+    <Compile Include="ViewModels\ItemsViewModel.cs" />
     <Compile Include="ViewModels\NewItemViewModel.cs" />
     <Compile Include="ViewModels\SelectItemViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -336,6 +337,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="ViewModels\Dialogs\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

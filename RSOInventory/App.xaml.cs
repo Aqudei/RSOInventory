@@ -28,7 +28,6 @@ namespace RSOInventory
     {
         protected override Window CreateShell()
         {
-
             return Container.Resolve<Shell>();
         }
 

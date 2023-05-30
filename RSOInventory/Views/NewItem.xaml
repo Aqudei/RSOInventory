@@ -19,7 +19,7 @@
         </Style>
     </prism:Dialog.WindowStyle>
 
-    <Grid>
+    <Grid Margin="25">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
